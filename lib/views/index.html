@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+  <head>
+    <meta charset="utf-8">
+    <title>Tic-Tac-Toe</title>
+
+    <!-- Le styles -->
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+    <link href="/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/css/app.css" rel="stylesheet">
+  </head>
+  <body>
+    <div>
+      <ng-view></ng-view>
+    </div>
+    <script type="text/javascript" src="javascripts/jquery.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="javascripts/api.js"></script>
+    <script type="text/javascript" src="javascripts/mustache.js"></script>
+    <script type="text/javascript" src="javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="javascripts/app.js"></script>
+
+    <div class="container">
+
+      <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="#">Tic-Tac-Toe</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <div class="hero-unit">
+        <h1>Tic Tac Toe!</h1>
+        <p>Play Tic Tac Toe against your friends in this multiplayer demo.</p>
+        <p><a class="btn btn-primary btn-large" href="https://github.com/christkv/tic-tac-toe">Github &raquo;</a></p>
+      </div>
+
+      <!-- Example row of columns -->
+      <div class="row" id="view">
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>&copy; Christian Kvalheim 2012</p>
+      </footer>
+
+    </div> <!-- /container -->
+  </body>
+</html>
