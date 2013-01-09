@@ -1,6 +1,10 @@
 var env                               = require('./env')
   , main_controller                   = require('./lib/controllers/main_controller');
 
+var register_handler                  = require('./lib/handlers/login_handler').register_handler
+  , login_handler                     = require('./lib/handlers/login_handler').login_handler
+
+
 env.initialize(function(err, app, io, session_store, db) {  
   if(err) throw err;
 
@@ -13,6 +17,8 @@ env.initialize(function(err, app, io, session_store, db) {
   // websocket api end point handlers (our API)
   //
   io.sockets.on('connection', function (socket) {
+    socket.on('register', register_handler(io, socket, session_store, db));
+    socket.on('login', login_handler(io, socket, session_store, db));
     
     // Fire the init message to setup the game
     socket.emit('data', {event:'init', ok:true, result: socket.handshake.sessionID});

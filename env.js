@@ -4,7 +4,8 @@ var express = require('express')
   , app = express()
   , server = require('http').createServer(app)
   , io = require('socket.io').listen(server)
-  , cookie = require('cookie');
+  , cookie = require('cookie')
+  , gamer = require('./lib/models/gamer');
 
 /** 
  * Setting for the application
@@ -82,31 +83,35 @@ var initialize = function(callback) {
 };
 
 var run = function(callback) {
-  server.listen(APP_PORT, APP_HOST, function(err) {
-    if(err) {
-      db.close();
-      return callback(err);
-    }
+  gamer(db).init(function(err, result) {
+    if(err) return callback(err);
 
-    // Print out a nice message to the console
-    console.log(
-        [ ""
-        , "        |       |"
-        , "        |       |"
-        , "  — — — | — — — | — — — "
-        , "        |       |"
-        , "        |       |"
-        , "  — — — | — — — | — — — "
-        , "        |       |"
-        , "        |       |"
-        , ""
-        , "tic-tac-toe server v" + require('./package.json').version
-        , "listening on port " + APP_PORT + " and host " + APP_HOST
-      ].join('\n'));
+    server.listen(APP_PORT, APP_HOST, function(err) {
+      if(err) {
+        db.close();
+        return callback(err);
+      }
 
-    // Return successful start of server
-    callback(null);
-  });
+      // Print out a nice message to the console
+      console.log(
+          [ ""
+          , "        |       |"
+          , "        |       |"
+          , "  — — — | — — — | — — — "
+          , "        |       |"
+          , "        |       |"
+          , "  — — — | — — — | — — — "
+          , "        |       |"
+          , "        |       |"
+          , ""
+          , "tic-tac-toe server v" + require('./package.json').version
+          , "listening on port " + APP_PORT + " and host " + APP_HOST
+        ].join('\n'));
+
+      // Return successful start of server
+      callback(null);
+    });
+  });  
 }
 
 exports.initialize = initialize;
