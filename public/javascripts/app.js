@@ -160,6 +160,43 @@ api.on('chat_message', function(err, data) {
   chat_window.append('<p class="chat_msg_other">' + get_date_time_string() + '&#62; ' + message + '</p>');
 });
 
+/**
+ * A player disconnect from the game, ensure we cancel any games we are playing
+ * with them
+ */
+api.on('disconnected', function(err, data) {
+  if(err) return;
+  // Get the sid
+  var sid = data;
+  // Check if the current game is being played with this user
+  if(application_state.game 
+    && (application_state.game.player1_sid == sid || application_state.game.player2_sid == sid)) {
+
+    // Load all the available gamers
+    api.find_all_available_gamers(function(err, gamers) {
+      // If we have an error show the error message to the user        
+      if(err) return error_box_show(err.error);
+
+      // Save the list of games in our game state
+      application_state.gamers = gamers;
+
+      // Show the main dashboard view and render with all the available players
+      template_handler.setTemplate("#view", "dashboard", {gamers:gamers});
+      
+      // Add handlers for each new player so we can play them
+      for(var i = 0; i < gamers.length; i++) {
+        $("#gamer_" + gamers[i]._id).click(invite_gamer_button_handler(application_state, api, template_handler));
+      }
+
+      // Reset the game state
+      application_state.game = null;
+
+      // If we have an error show the error message to the user
+      error_box_show("User disconnected");
+    });
+  }
+});
+
 /*********************************************************************************************
  * Handlers
  ********************************************************************************************/
