@@ -84,11 +84,47 @@ API.prototype.login = function(user_name, password, callback) {
 }
 
 /**
- * Send a message to a specific gamer on a specific game
+ * Find all available gamers that are active
  */
-API.prototype.send_message = function(game_id, message, callback) {
-  this.once("send_message", callback);  
-  this.socket.emit("send_message", {game_id: game_id, message: message});
+API.prototype.find_all_available_gamers = function(callback) {  
+  this.once("find_all_available_gamers", callback);
+  this.socket.emit("find_all_available_gamers", {});
+}
+
+/**
+ * Invite a gamer to a new game
+ */
+API.prototype.invite_gamer = function(gamer, callback) {
+  this.once("invite_gamer", callback);
+  this.socket.emit("invite_gamer", gamer);
+} 
+
+/**
+ * Decline an invite to play a game
+ */
+API.prototype.decline_game = function(invite, callback) {
+  this.once("decline_game", callback);
+  this.socket.emit("decline_game", invite);
+}
+
+/**
+ * Accept an invite to play a game
+ */
+API.prototype.accept_game = function(invite, callback) {
+  this.once("accept_game", callback);
+  this.socket.emit("accept_game", invite);
+}
+
+/**
+ * Place a marker on a specific game at a specific location
+ */
+API.prototype.place_marker = function(game_id, x, y, callback) {  
+  this.once("place_marker", callback);
+  this.socket.emit("place_marker", {
+      game_id: game_id
+    , x: x
+    , y: y
+  });
 }
 
 /**
