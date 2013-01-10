@@ -3,7 +3,11 @@ var env                               = require('./env')
 
 var register_handler                  = require('./lib/handlers/login_handler').register_handler
   , login_handler                     = require('./lib/handlers/login_handler').login_handler
-
+  , find_all_available_gamers         = require('./lib/handlers/gamer_handler').find_all_available_gamers
+  , invite_gamer                      = require('./lib/handlers/gamer_handler').invite_gamer
+  , decline_game                      = require('./lib/handlers/gamer_handler').decline_game
+  , accept_game                       = require('./lib/handlers/gamer_handler').accept_game
+  , place_marker                      = require('./lib/handlers/gamer_handler').place_marker;
 
 env.initialize(function(err, app, io, session_store, db) {  
   if(err) throw err;
@@ -20,6 +24,13 @@ env.initialize(function(err, app, io, session_store, db) {
     socket.on('register', register_handler(io, socket, session_store, db));
     socket.on('login', login_handler(io, socket, session_store, db));
     
+    // The game invite and play methods
+    socket.on('find_all_available_gamers', find_all_available_gamers(io, socket, session_store, db));  
+    socket.on('invite_gamer', invite_gamer(io, socket, session_store, db));
+    socket.on('decline_game', decline_game(io, socket, session_store, db));
+    socket.on('accept_game', accept_game(io, socket, session_store, db));
+    socket.on('place_marker', place_marker(io, socket, session_store, db));
+
     // Fire the init message to setup the game
     socket.emit('data', {event:'init', ok:true, result: socket.handshake.sessionID});
   });
