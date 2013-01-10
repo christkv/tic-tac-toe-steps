@@ -10,7 +10,6 @@ var API = function() {
 
   // Handle the data returned over the SocketIO
   this.socket.on("data", function(data) {
-
     // If the data object has an event member we have
     // a valid event message from the server
     if(data && data.event) {
