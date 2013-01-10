@@ -127,6 +127,14 @@ API.prototype.place_marker = function(game_id, x, y, callback) {
 }
 
 /**
+ * Send a message to a specific gamer on a specific game
+ */
+API.prototype.send_message = function(game_id, message, callback) {
+  this.once("send_message", callback);  
+  this.socket.emit("send_message", {game_id: game_id, message: message});
+}
+
+/**
  * Simple method to create a formated error message that fits the
  * format returned from the server
  */

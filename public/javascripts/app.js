@@ -147,6 +147,19 @@ api.on('game_invite', function(err, data) {
   game_invite_box_show(data.gamer);
 });
 
+/**
+ * The other player sent a message, render the message in the chat box
+ */
+api.on('chat_message', function(err, data) {
+  if(err) return;
+  // Get the message
+  var message = data.message;
+  // Get the chat window  
+  var chat_window = $('#chat');
+  // Push the current message to the bottom
+  chat_window.append('<p class="chat_msg_other">' + get_date_time_string() + '&#62; ' + message + '</p>');
+});
+
 /*********************************************************************************************
  * Handlers
  ********************************************************************************************/
@@ -285,7 +298,7 @@ var invite_decline_button_handler = function(application_state, api, template_ha
 var setupBoardGame = function(application_state, api, template_handler, game) {
   // Save current game to state
   application_state.game = game;
-  // Let's render the board game with the chat window
+  // Let's render the board game
   template_handler.setTemplate("#view", "board", {});
   // Set the marker for our player (X if we are the starting player)
   application_state.marker = application_state.session_id == game.current_player ? "x" : "o";
@@ -301,6 +314,9 @@ var setupBoardGame = function(application_state, api, template_handler, game) {
       $("#" + cells[j].id).click(game_board_cell_handler(application_state, api, template_handler, game));
     }
   }
+
+  // Map up the chat handler
+  $('#chat_message').keypress(chat_handler(application_state, api, template_handler, game));  
 }
 
 /**
@@ -335,9 +351,46 @@ var game_board_cell_handler = function(application_state, api, template_handler,
   }
 }
 
+/**
+ * Handle chat messages from the user, (activates on the return key)
+ */ 
+var chat_handler = function(application_state, api, template_handler, game) {
+  return function(e) {  
+    if(e.which == 13) {
+      var chat_input = $('#chat_message');
+      var chat_window = $('#chat');
+      // Fetch the message the user entered
+      var message = chat_input.val();
+      if(application_state.game == null) return;
+      
+      // Send the message to the other player
+      api.send_message(application_state.game._id, message, function(err, data) {
+        // If we have an error show the error message to the user        
+        if(err) return error_box_show(err.error);
+  
+        // Push the current message to the bottom
+        chat_window.append('<p class="chat_msg_current">' + get_date_time_string() + '&#62; ' + message + "</p>");
+        // Clear out the messages
+        chat_input.val('');
+      });
+    }
+  }  
+}
+
 /*********************************************************************************************
  * Helper methods
  ********************************************************************************************/
+
+/**
+ * Get a date time string
+ */ 
+var get_date_time_string = function() {
+  var date = new Date();
+  var string = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+  string += ":" + (date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes());
+  string += ":" + (date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds());
+  return string;
+}
 
 /**
  * Show an error message box

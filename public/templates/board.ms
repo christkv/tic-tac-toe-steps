@@ -27,4 +27,6 @@
   </div>
 </div>
 <div class="span4">
+  <div id="chat"></div>
+  <input class="input-block-level" type="text" placeholder="chat message" id="chat_message"/>
 </div>

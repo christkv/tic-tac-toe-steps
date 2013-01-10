@@ -7,7 +7,9 @@ var register_handler                  = require('./lib/handlers/login_handler').
   , invite_gamer                      = require('./lib/handlers/gamer_handler').invite_gamer
   , decline_game                      = require('./lib/handlers/gamer_handler').decline_game
   , accept_game                       = require('./lib/handlers/gamer_handler').accept_game
-  , place_marker                      = require('./lib/handlers/gamer_handler').place_marker;
+  , place_marker                      = require('./lib/handlers/gamer_handler').place_marker
+  , send_message                      = require('./lib/handlers/chat_handler').send_message
+  , disconnected                      = require('./lib/handlers/user_handler').disconnected; 
 
 env.initialize(function(err, app, io, session_store, db) {  
   if(err) throw err;
@@ -30,6 +32,12 @@ env.initialize(function(err, app, io, session_store, db) {
     socket.on('decline_game', decline_game(io, socket, session_store, db));
     socket.on('accept_game', accept_game(io, socket, session_store, db));
     socket.on('place_marker', place_marker(io, socket, session_store, db));
+
+    // Accepts chat messages
+    socket.on('send_message', send_message(io, socket, session_store, db));
+
+    // On disconnect
+    socket.on('disconnect', disconnected(io, socket, session_store, db));
 
     // Fire the init message to setup the game
     socket.emit('data', {event:'init', ok:true, result: socket.handshake.sessionID});
