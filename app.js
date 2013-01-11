@@ -32,6 +32,7 @@ env.initialize(function(err, app, io, session_store, db) {
     socket.on('decline_game', decline_game(io, socket, session_store, db));
     socket.on('accept_game', accept_game(io, socket, session_store, db));
     socket.on('place_marker', place_marker(io, socket, session_store, db));
+    socket.on('leave_game', disconnected(io, socket, session_store, db));
 
     // Accepts chat messages
     socket.on('send_message', send_message(io, socket, session_store, db));

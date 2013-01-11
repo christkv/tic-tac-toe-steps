@@ -354,6 +354,36 @@ var setupBoardGame = function(application_state, api, template_handler, game) {
 
   // Map up the chat handler
   $('#chat_message').keypress(chat_handler(application_state, api, template_handler, game));  
+  $('#quit_game').click(quit_game_handler(application_state, api, template_handler, game));
+}
+
+/**
+ * Create a handler for the quit game button on the board, sending a disconnect message
+ * to the server and bringing the player back to the dashboard
+ */ 
+var quit_game_handler = function(application_state, api, template_handler, game) {
+  return function() {
+    // Execute a disconnect
+    api.leave_game(function(err, result) {
+      // Load all the available gamers
+      api.find_all_available_gamers(function(err, gamers) {
+
+        // If we have an error show the error message to the user        
+        if(err) return error_box_show(err.error);
+
+        // Save the list of games in our game state
+        application_state.gamers = gamers;
+ 
+        // Show the main dashboard view and render with all the available players
+        template_handler.setTemplate("#view", "dashboard", {gamers:gamers});
+        
+        // Add handlers for each new player so we can play them
+        for(var i = 0; i < gamers.length; i++) {
+          $("#gamer_" + gamers[i]._id).click(invite_gamer_button_handler(application_state, api, template_handler));
+        }
+      });      
+    });
+  }
 }
 
 /**

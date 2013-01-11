@@ -27,6 +27,7 @@
   </div>
 </div>
 <div class="span4">
+  <div><button id="quit_game">Quit Game</button></div>
   <div id="chat"></div>
   <input class="input-block-level" type="text" placeholder="chat message" id="chat_message"/>
 </div>

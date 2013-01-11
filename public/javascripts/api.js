@@ -135,6 +135,14 @@ API.prototype.send_message = function(game_id, message, callback) {
 }
 
 /**
+ * Send a disconnect message to the server
+ */
+API.prototype.leave_game = function(callback) {
+  this.socket.emit("leave_game", {});  
+  callback(null, null);
+}
+
+/**
  * Simple method to create a formated error message that fits the
  * format returned from the server
  */
